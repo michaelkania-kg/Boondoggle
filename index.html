@@ -82,7 +82,7 @@ button{font:inherit;cursor:pointer}
 .board-score{font-family:var(--display);font-weight:900;font-size:clamp(2.25rem,9vw,4rem);line-height:1;letter-spacing:-.02em;white-space:nowrap}
 .board-score i{font-style:normal;color:rgba(245,242,234,.32);margin:0 .1em}
 .board-cap{font-size:.5625rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,242,234,.45);margin:.6rem 0 0;font-weight:600}
-@media (max-width:600px){.board-roster{display:none}.board-side{flex-direction:column;text-align:center;gap:.5rem}.board-side.right{flex-direction:column}}
+@media (max-width:600px){.board-roster{font-size:.5625rem;line-height:1.55;margin-top:.4rem}.board-side{flex-direction:column;text-align:center;gap:.5rem}.board-side.right{flex-direction:column}}
 
 .hero-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:1.25rem;margin-top:clamp(1.75rem,4vw,2.5rem)}
 .fact-k{font-size:.5625rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,242,234,.45);margin:0 0 .35rem;font-weight:700}
@@ -426,11 +426,11 @@ button{font:inherit;cursor:pointer}
       </div>
       <div>
         <p class="fact-k">On the line</p>
-        <p class="fact-v"><span data-total>—</span><small><span data-towin>—</span> wins the cup</small></p>
+        <p class="fact-v"><span data-total>—</span> points<small><span data-towin>—</span> wins the cup</small></p>
       </div>
       <div>
         <p class="fact-k">Courses</p>
-        <p class="fact-v">Five<small>in four days</small></p>
+        <p class="fact-v">Five<small><span data-holes>—</span> holes · four days</small></p>
       </div>
     </div>
   </div>
@@ -809,6 +809,7 @@ const OI = {
 OI.rounds.forEach((r, ri) => r.items.forEach((it, ii) => { it.id = ri + "-" + ii; }));
 const ALL_ITEMS = OI.rounds.flatMap(r => r.items);
 const TOTAL_PTS = ALL_ITEMS.reduce((n, it) => n + it.p, 0);
+const TOTAL_HOLES = OI.rounds.reduce((n, r) => n + (parseInt(r.meta, 10) || 0), 0);
 const HALF = TOTAL_PTS / 2;
 const TO_WIN = (Math.floor(HALF * 2) / 2 === HALF) ? HALF + .5 : Math.ceil(HALF * 2) / 2;
 
@@ -920,6 +921,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 function paintScores(){
   const t = tally();
   $$("[data-total]").forEach(el => el.textContent = fmt(TOTAL_PTS));
+  $$("[data-holes]").forEach(el => el.textContent = TOTAL_HOLES);
   $$("[data-towin]").forEach(el => el.textContent = fmt(TO_WIN));
   $$("[data-score='swan']").forEach(el => el.textContent = fmt(t.s));
   $$("[data-score='geese']").forEach(el => el.textContent = fmt(t.g));
