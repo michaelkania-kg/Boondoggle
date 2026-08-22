@@ -861,7 +861,16 @@ ${crossedClubs(mark)}
    OV    — per round: session total assigned straight to the Boons,
            stored in half-points. Overrides that round's individual points.
    ============================================================ */
-const KEY = "boondoggle-2026-standings";
+const KEY = "boondoggle-2026-standings-v2";
+
+/* Results baked into the page so every viewer sees them (no server needed).
+   Round 0 = The Sandbox, Round 1 = Sedge Valley (order matches the rounds above).
+   STATE per point: 1 Boons | 2 Doggles | 3 halved.  OV per round: Boons points x2. */
+const DEFAULT_OV = { 0: 2 };                  // The Sandbox: 1-1 split
+const DEFAULT_STATE = {                        // Sedge Valley
+  "1-0": 2, "1-1": 2, "1-2": 3,                //  Match 1 (Davis & Cory vs Max & Ambrose): Doggles 2.5 - 0.5
+  "1-3": 2, "1-4": 2, "1-5": 2                 //  Match 2 (Kania & Grayson vs Ted & Tyler): Doggles 3 - 0
+};
 let STATE = {};
 let OV = {};
 
@@ -893,7 +902,11 @@ function decode(code){
 function loadState(){
   const hash = new URLSearchParams(location.hash.slice(1)).get("s");
   if (hash) { decode(hash); saveState(); return; }
-  try { decode(localStorage.getItem(KEY) || ""); } catch (e) { /* file:// or blocked */ }
+  let saved = "";
+  try { saved = localStorage.getItem(KEY) || ""; } catch (e) { /* file:// or blocked */ }
+  if (saved) { decode(saved); return; }
+  STATE = { ...DEFAULT_STATE };   // fresh viewer: show the baked-in results
+  OV = { ...DEFAULT_OV };
 }
 function saveState(){
   try { localStorage.setItem(KEY, encode()); } catch (e) { /* nothing to do */ }
