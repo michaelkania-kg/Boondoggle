@@ -818,7 +818,7 @@ const TOTAL_HOLES = OI.rounds.reduce((n, r) => n + (parseInt(r.meta, 10) || 0), 
 
 /* Manually set the top-line score shown to everyone.
    { s: Boons, g: Doggles }.  Set to null to compute it from the rounds instead. */
-const MANUAL_OVERALL = { s: 1.5, g: 6.5 };
+const MANUAL_OVERALL = { s: 4.75, g: 12.25 };
 const HALF = TOTAL_PTS / 2;
 const TO_WIN = (Math.floor(HALF * 2) / 2 === HALF) ? HALF + .5 : Math.ceil(HALF * 2) / 2;
 
@@ -874,7 +874,7 @@ const DEFAULT_STATE = {                        // Sedge Valley
 let STATE = {};
 let OV = {};
 
-const fmt = n => (n % 1 === 0 ? String(n) : n.toFixed(1));
+const fmt = n => (n % 1 === 0 ? String(n) : String(Math.round(n * 100) / 100));
 const ampm = w => (w === "Morning" ? "AM" : "PM");
 const roundTotal = r => r.items.reduce((n, x) => n + x.p, 0);
 
