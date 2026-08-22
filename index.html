@@ -815,6 +815,10 @@ OI.rounds.forEach((r, ri) => r.items.forEach((it, ii) => { it.id = ri + "-" + ii
 const ALL_ITEMS = OI.rounds.flatMap(r => r.items);
 const TOTAL_PTS = ALL_ITEMS.reduce((n, it) => n + it.p, 0);
 const TOTAL_HOLES = OI.rounds.reduce((n, r) => n + (parseInt(r.meta, 10) || 0), 0);
+
+/* Manually set the top-line score shown to everyone.
+   { s: Boons, g: Doggles }.  Set to null to compute it from the rounds instead. */
+const MANUAL_OVERALL = { s: 1.5, g: 6.5 };
 const HALF = TOTAL_PTS / 2;
 const TO_WIN = (Math.floor(HALF * 2) / 2 === HALF) ? HALF + .5 : Math.ceil(HALF * 2) / 2;
 
@@ -912,6 +916,10 @@ function roundTally(r){
   return { s, g, done, set: false };
 }
 function tally(){
+  if (MANUAL_OVERALL) {
+    const s = MANUAL_OVERALL.s, g = MANUAL_OVERALL.g;
+    return { s, g, done: s + g, left: Math.max(0, TOTAL_PTS - s - g) };
+  }
   let s = 0, g = 0, done = 0;
   OI.rounds.forEach(r => { const t = roundTally(r); s += t.s; g += t.g; done += t.done; });
   return { s, g, done, left: TOTAL_PTS - done };
